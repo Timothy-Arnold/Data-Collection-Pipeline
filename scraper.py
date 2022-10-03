@@ -40,29 +40,45 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-URL = "https://www.amazon.co.uk/"
-
-driver = webdriver.Chrome()
-
 class Scraper:
+    def __init__(self, URL = "https://www.amazon.co.uk/"):
+        self.driver = webdriver.Chrome()
+        self.URL = URL
+        self.product_list = []
     def open_webpage(self):
-        driver.get(URL)
+        self.driver.get(self.URL)
+        time.sleep(2)
     def input_search(self):
-        search = driver.find_element(By.ID, "twotabsearchtextbox")
+        search = self.driver.find_element(By.ID, "twotabsearchtextbox")
         search.send_keys("gaming mouse")
         search.send_keys(Keys.RETURN)
     def accept_cookies(self):
         try:
-            accept_cookies_button = driver.find_element(By.ID, "sp-cc-accept")
+            accept_cookies_button = self.driver.find_element(By.ID, "sp-cc-accept")
             accept_cookies_button.click()
         except:
             pass
     def next_page(self):
-        next_button = driver.find_element(By.XPATH, '//a[@class = "s-pagination-item s-pagination-next s-pagination-button s-pagination-separator"]')
+        next_button = self.driver.find_element(By.XPATH, '//a[@class = "s-pagination-item s-pagination-next s-pagination-button s-pagination-separator"]')
         next_button.send_keys(Keys.RETURN)
+    def get_link(self):
+        product = self.driver.find_element(By.XPATH, '//h2[@class = "a-size-mini a-spacing-none a-color-base s-line-clamp-2"]')
+        a_tag = product.find_element(by=By.TAG_NAME, value='a')
+        link = a_tag.get_attribute("href")
+        self.product_list.append(link)
+        print(self.product_list)
 
-scrape = Scraper()
-scrape.open_webpage()
-scrape.input_search()
-scrape.accept_cookies()
-scrape.next_page()
+#<a class="a-link-normal s-underline-text s-underline-link-text s-link-style a-text-normal"
+#<h2 class="a-size-mini a-spacing-none a-color-base s-line-clamp-2"
+
+def scrape():
+    scrape = Scraper()
+    scrape.open_webpage()
+    scrape.input_search()
+    scrape.accept_cookies()
+    scrape.get_link()
+    scrape.next_page()
+    time.sleep(5)
+
+if __name__ == '__main__':
+    scrape()
