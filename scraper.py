@@ -1,35 +1,3 @@
-# response = requests.get("https://www.logitech.com/en-gb/products/mice.html")
-# html = response.content
-# html = BeautifulSoup(html, 'html.parser')
-
-# print(html.prettify())
-
-# products = html.find_all("div")[-20:-1]
-
-# for product in products:
-#     data = product.find_all("span")
-#     print(data)
-#     data = [feature.text for feature in data]
-#     print(data)
-
-# print(html.prettify())
-
-# print(html.title)
-
-# print(html.title.name)
-
-# print(html.title.string)
-
-# print(html.title.parent.name)
-
-# print(html.div)
-
-# print(html.find_all("span", class_="currency-symbol"))
-
-# print(html.find_all("span", class_="currency-symbol"))
-
-# <div class="pricing-info"><span><span class="currency-symbol">£</span>119.99</span></div>
-
 import time
 
 import requests
@@ -48,11 +16,11 @@ class Scraper:
     def open_webpage(self):
         self.driver.get(self.URL)
         time.sleep(2)
-    def input_search(self):
+    def input_search(self, search_string):
         search = self.driver.find_element(By.ID, "twotabsearchtextbox")
-        search.send_keys("gaming mouse")
+        search.send_keys(search_string)
         search.send_keys(Keys.RETURN)
-        time.sleep(2)
+        time.sleep(1)
     def accept_cookies(self):
         try:
             accept_cookies_button = self.driver.find_element(By.ID, "sp-cc-accept")
@@ -72,23 +40,30 @@ class Scraper:
         next_button.send_keys(Keys.RETURN)
         time.sleep(1)
 
-#<a class="a-link-normal s-underline-text s-underline-link-text s-link-style a-text-normal"
-#<h2 class="a-size-mini a-spacing-none a-color-base s-line-clamp-2"
-#//*[@id="search"]/div[1]/div[1]/div/span[3]/div[2]/div[5]
-
 def scrape():
     scrape = Scraper()
     scrape.open_webpage()
     scrape.accept_cookies()
-    scrape.input_search()
+    scrape.input_search("laptop")
     # Get first page's links
     scrape.get_links()
-    for interation in range(18):
+    for page in range(19):
         scrape.next_page()
         scrape.get_links()
-    print(f'There are {len(scrape.link_list)} properties in this page')
     print(scrape.link_list)
+    print(f'There are {len(scrape.link_list)} properties in this page')
     time.sleep(60)
 
 if __name__ == '__main__':
     scrape()
+
+# %%
+import requests
+from bs4 import BeautifulSoup
+
+test_link = "https://www.amazon.co.uk/Razer-Blade-17-Display-Chamber/dp/B09Q6CVSW3/ref=sr_1_3?keywords=laptop&qid=1664886688&qu=eyJxc2MiOiI5LjQzIiwicXNhIjoiOC44MSIsInFzcCI6IjguMTkifQ%3D%3D&sr=8-3"
+
+html_request = requests.get(test_link)
+html_string = html_request.text
+print(html_string)
+# %%
