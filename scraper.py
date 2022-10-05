@@ -1,12 +1,7 @@
 import time
-
-import requests
-from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 
 class Scraper:
     def __init__(self, URL = "https://www.amazon.co.uk/"):
@@ -52,18 +47,8 @@ def scrape():
         scrape.get_links()
     print(scrape.link_list)
     print(f'There are {len(scrape.link_list)} properties in this page')
+    return scrape.link_list
     time.sleep(60)
 
 if __name__ == '__main__':
     scrape()
-
-# %%
-import requests
-from bs4 import BeautifulSoup
-
-test_link = "https://www.amazon.co.uk/Razer-Blade-17-Display-Chamber/dp/B09Q6CVSW3/ref=sr_1_3?keywords=laptop&qid=1664886688&qu=eyJxc2MiOiI5LjQzIiwicXNhIjoiOC44MSIsInFzcCI6IjguMTkifQ%3D%3D&sr=8-3"
-
-html_request = requests.get(test_link)
-html_string = html_request.text
-print(html_string)
-# %%
