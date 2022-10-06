@@ -63,91 +63,105 @@ if __name__ == '__main__':
 
 ## Milestone 2
 
-For this milestone I 
+For this milestone I created methods to scrape the text and image details off each amazon product's webpage. I stored these details in a dictionary, along with a unique UUID to identify each product. Getting the the technical details was a bit tricky since the table on amazon had inconsistent positioning for its variables, so I had to use a nested for loop to track the desired details. The for loop also has a check specifically for Resolution, since some products had variable name "Resolution", and others had variable name "Screen Resolution".
 
 ```python
+class Details:
+    def __init__(self, URL):
+        self.driver = webdriver.Chrome()
+        self.URL = URL
+        self.driver.get(URL)
+        self.required_details = ["Price", "Brand", "Standing screen display size", "Screen Resolution", "RAM Size", "Item Weight", "ASIN", "Image", "UUID"]
+        self.initial_values = ["Unknown"] * 9
+        self.details_dict = {self.required_details[i]: self.initial_values[i] for i in range(9)}
 
+    def extract_text_data(self, URL):
+        # Sometimes the first page opens with an error message, needs to be reloaded
+        # possible_error_location = driver.find_element(By.XPATH, '//*[@class="celwidget"]')
+        # possible_error = possible_error_location.find_element(By.XPATH, '//div[@class="a-alert-content"]')
+        # print(possible_error.text)
+        if EC.presence_of_element_located((By.XPATH, '//*[@class="a-alert-content"]')):
+            self.driver.get(URL)
+            time.sleep(1)
+        
+        price_location = self.driver.find_element(By.XPATH, '//*[@id="corePriceDisplay_desktop_feature_div"]')
+        price_pound = price_location.find_element(By.XPATH, '//span[@class="a-price-whole"]').text
+        price_penny = price_location.find_element(By.XPATH, '//span[@class="a-price-fraction"]').text
+        price = f"£{price_pound}.{price_penny}"
+
+        self.details_dict["Price"] = price
+
+        details_table = self.driver.find_element(By.XPATH, '//*[@id="productDetails_techSpec_section_1"]')
+        name_list = details_table.find_elements(By.XPATH, '//th[@class = "a-color-secondary a-size-base prodDetSectionEntry"]')
+        value_list = details_table.find_elements(By.XPATH, '//td[@class = "a-size-base prodDetAttrValue"]')
+        
+        for index_1 in range(len(name_list)):
+            if name_list[index_1].text == "Resolution":
+                self.details_dict["Screen Resolution"] = value_list[index_1].text
+            for index_2 in range(1,7):
+                if name_list[index_1].text == self.required_details[index_2]:
+                    self.details_dict[self.required_details[index_2]] = value_list[index_1].text
+
+        return self.details_dict
+
+    def extract_img_data(self):
+        img_location = self.driver.find_element(By.XPATH, '//*[@id="landingImage"]')
+        img = img_location.get_attribute("src")
+        return img
+
+    def assign_uuid(self):
+        UUID = str(uuid.uuid4())
+        return UUID
+
+def extract_all_data(URL):
+    extraction = Details(URL)
+    time.sleep(1)
+    extraction.details_dict = extraction.extract_text_data(URL)
+    extraction.details_dict["Image"] = extraction.extract_img_data()
+    extraction.details_dict["UUID"] = extraction.assign_uuid()
+    return extraction.details_dict
 ```
 
-## Milestone 3
-
-In milestone 3 I built the check_letter and check_word methods which would be called by the ask_letter method upon receiving a valid input. For incorrect inputs I reduced the num_lives attribute by 1, and for correct inputs I either reduced the num_letters attribute by 1, or all the way down to 0 in the case of a correct word (signifying a win). In the ask_letter method I used a for loop to replace blank spaces with the inputed letter if said letter was in the word.
+I also created data storage functions to store product details, as well as a saved image, in my own directory.
 
 ```python
-    def check_letter(self, letter) -> None:
-        '''
-        Checks if the letter is in the word.
-        If it is, it replaces the '_' in the word_guessed list with the letter.
-        If it is not, it reduces the number of lives by 1.
+import os
 
-        Parameters:
-        ----------
-        letter: str
-            The letter to be checked
+path = "C:/Users/timcy/Documents/Aicore/Data-Collection-Pipeline/raw_data"
+if not os.path.exists(path):
+    os.mkdir(path)
 
-        '''
-        if letter in self.word:
-            print(f"Nice! {letter} is in the word!")
-            self.number_letters -= 1
-            for index in range(len(self.word)):
-                if self.word[index] == letter:
-                    self.word_guessed[index] = letter
-            print(self.word_guessed)
-        else:
-            self.num_lives -= 1
-            print(f'Sorry, {letter} is not in the word.\nYou have {self.num_lives} lives left.')
-            print(Hangman_images[self.num_lives])
-        if self.number_letters != 0:
-            print(f"You have already tried: {self.list_letters}")
+import details
+import json
 
-    def check_word(self, word) -> None:
-        '''
-        Checks if the word guessed is correct.
-        If it is, it replaces all of the '_' in the word_guessed list with the correct letters.
-        If it is not, it reduces the number of lives by 1.
+def create_product_folder(URL):
+    path = "C:/Users/timcy/Documents/Aicore/Data-Collection-Pipeline/raw_data"
+    details_dict = details.extract_all_data(URL)
+    print(details_dict)
+    product_id = details_dict["ASIN"]
+    product_path = path + f"/{product_id}"
+    print(product_path)
+    print(product_id)
+    if not os.path.exists(product_path):
+        os.mkdir(product_path)
+    with open(f"{product_path}/data.json", 'w') as fp:
+        json.dump(details_dict, fp)
 
-        Parameters:
-        ----------
-        word: str
-            The word to be checked
+import requests
 
-        '''
-        if word == self.word:
-            print(f"Nice! {word} is the word!")
-            self.number_letters = 0
-            print(list(word))
-        else:
-            self.num_lives -= 1
-            print(f'Sorry, {word} is not the word.\nYou have {self.num_lives} lives left.')
-            print(Hangman_images[self.num_lives])
-        if self.number_letters != 0:
-            print(f"You have already tried: {self.list_letters}")
-```
-
-## Milestone 4
-
-For the final milestone I defined a function which would start an instance of the game by iteratively asking the user for a letter. I also coded the winning / losing conditions of the game which would break the while loop of asking for letters and print a winning / losing statement.
-
-```python
-def play_game(word_list):
-    game = Hangman(word_list)
-    while True:
-        game.ask_letter()
-        if game.num_lives == 0:
-            print(f"You ran out of lives. The word was {game.word}.")
-            break
-        if game.number_letters == 0:
-            if game.num_lives == 5:
-                print("Congratulations, you won without losing any lives!")
-            else:
-                print("Congratulations, you won!")
-            break
-
-if __name__ == '__main__':
-    word_list = ['apple', 'banana', 'orange', 'pear', 'strawberry', 'watermelon']
-    play_game(word_list)
+def create_image_folder(details_dict):
+    product_id = details_dict["ASIN"]
+    image_url = details_dict["Image"]
+    path = f"C:/Users/timcy/Documents/Aicore/Data-Collection-Pipeline/raw_data/{product_id}"
+    image_folder_path = path + f"/images"
+    if not os.path.exists(image_folder_path):
+        os.mkdir(image_folder_path)
+    
+    image_file_path = image_folder_path + f"/{product_id}"
+    print(image_file_path)
+    image_data = requests.get(image_url).content
+    with open(image_file_path + '.jpg', 'wb') as handler:
+        handler.write(image_data)
 ```
 
 ## Conclusions
-
-Writing this hangman project involved using loops, game logic etc. in order to define functions, all within the framework of a class to help carry out each instance of the game. In the future I would consider making a front end GUI for the game using Tkinter which would make it more accessible to the user.
