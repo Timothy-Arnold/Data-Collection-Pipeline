@@ -4,6 +4,32 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 
 class Scraper:
+    '''
+    This class is used to collect all the URLs of product listings on Amazon in all 20 pages, after searching "laptop".
+
+    Parameters:
+    ----------
+    URL: str
+        The URL of the website (in this case Amazon's front page)
+    
+    Attributes:
+    ----------
+    link_list: list
+        The list of URLs of all the product pages
+
+    Methods:
+    -------
+    open_webpage()
+        Opens the Amazon front page
+    input_search()
+        Types "laptop" into the search bar
+    accept_cookies()
+        Gets rid of the "Get cookies" popup
+    get_links()
+        Finds all the product links in the page and stores them in the list
+    next_page()
+        Moves to the next page
+    '''
     def __init__(self, URL = "https://www.amazon.co.uk/"):
         self.driver = webdriver.Chrome()
         self.URL = URL
