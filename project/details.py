@@ -78,17 +78,9 @@ class Details:
         self.details_dict["UUID"] = Details.__assign_uuid(self)
         return self.details_dict
 
-def do_whole_extraction(URL):
-    extraction = Details(URL)
-    extraction.extract_all_data()
-    print(extraction.details_dict)
-    return extraction.details_dict
-
-# Tests
-# "https://www.amazon.co.uk/Lenovo-IdeaPad-Notebook-DDR4-SDRAM-802-11ax/dp/B0B4T3H79X/ref=sr_1_40?crid=2E1T6L3YWDF37&keywords=laptop&qid=1664901597&qu=eyJxc2MiOiI5LjQzIiwicXNhIjoiOC44MSIsInFzcCI6IjguMTkifQ%3D%3D&sprefix=laptop%2Caps%2C162&sr=8-40")
-# "https://www.amazon.co.uk/Razer-Blade-17-Display-Chamber/dp/B09Q6CVSW3/ref=sr_1_3?keywords=laptop&qid=1664886688&qu=eyJxc2MiOiI5LjQzIiwicXNhIjoiOC44MSIsInFzcCI6IjguMTkifQ%3D%3D&sr=8-3&th=1"
-# "https://www.amazon.co.uk/ASUS-Vivobook-E510MA-Microsoft-included/dp/B09X63GB82/ref=sr_1_10?crid=2GEDTE88DVY5K&keywords=laptop&qid=1664898174&qu=eyJxc2MiOiI5LjQzIiwicXNhIjoiOC44MSIsInFzcCI6IjguMTkifQ%3D%3D&sprefix=laptop%2Caps%2C62&sr=8-10&th=1")
 URL = "https://www.amazon.co.uk/HUAWEI-Matebook-16s-i9-12900H-Processor/dp/B0B56RJGSR/ref=sr_1_19?keywords=laptop&qid=1664919140&qu=eyJxc2MiOiI5LjQzIiwicXNhIjoiOC44MSIsInFzcCI6IjguMTkifQ%3D%3D&sr=8-19"
 
 if __name__ == '__main__':
-    do_whole_extraction(URL)
+    extraction = Details(URL)
+    extraction.extract_all_data()
+    print(extraction.details_dict)
