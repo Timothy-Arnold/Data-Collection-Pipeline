@@ -34,21 +34,21 @@ class Scraper:
         self.driver = webdriver.Chrome()
         self.URL = URL
         self.link_list = []
-    def open_webpage(self):
+    def __open_webpage(self):
         self.driver.get(self.URL)
         time.sleep(2)
-    def input_search(self, search_string):
+    def __input_search(self, search_string):
         search = self.driver.find_element(By.ID, "twotabsearchtextbox")
         search.send_keys(search_string)
         search.send_keys(Keys.RETURN)
         time.sleep(1)
-    def accept_cookies(self):
+    def __accept_cookies(self):
         try:
             accept_cookies_button = self.driver.find_element(By.ID, "sp-cc-accept")
             accept_cookies_button.click()
         except:
             pass
-    def get_links(self):
+    def __get_links(self):
         product_container = self.driver.find_element(By.XPATH, '//div[@class = "s-main-slot s-result-list s-search-results sg-row"]')
         product_list = product_container.find_elements(By.XPATH, '//div[@class = "s-result-item s-asin sg-col-0-of-12 sg-col-16-of-20 sg-col s-widget-spacing-small sg-col-12-of-16"]')
         for product in product_list:
@@ -56,25 +56,25 @@ class Scraper:
             link = a_tag.get_attribute("href")
             self.link_list.append(link)
         time.sleep(1)
-    def next_page(self):
+    def __next_page(self):
         next_button = self.driver.find_element(By.XPATH, '//a[@class = "s-pagination-item s-pagination-next s-pagination-button s-pagination-separator"]')
         next_button.send_keys(Keys.RETURN)
         time.sleep(1)
 
-def scrape():
-    scrape = Scraper()
-    scrape.open_webpage()
-    scrape.accept_cookies()
-    scrape.input_search("laptop")
-    # Get first page's links
-    scrape.get_links()
-    for page in range(19):
-        scrape.next_page()
-        scrape.get_links()
-    print(scrape.link_list)
-    print(f'There are {len(scrape.link_list)} properties in this page')
-    return scrape.link_list
-    time.sleep(60)
+    def scrape_all(self):
+        Scraper.__open_webpage(self)
+        Scraper.__accept_cookies(self)
+        Scraper.__input_search(self, "laptop")
+        # Get first page's links
+        Scraper.__get_links(self)
+        for page in range(19):
+            Scraper.__next_page(self)
+            Scraper.__get_links(self)
+        return self.link_list
+        time.sleep(5)
 
 if __name__ == '__main__':
-    scrape()
+    scrape = Scraper()
+    scrape.scrape_all()
+    print(scrape.link_list)
+    print(f'There are {len(scrape.link_list)} properties in this page')
