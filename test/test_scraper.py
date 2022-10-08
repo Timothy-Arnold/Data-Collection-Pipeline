@@ -12,5 +12,7 @@ class ScraperTestCase(unittest.TestCase):
         print(Scraper.scrape_all(self))
         actual_length = len(Scraper.scrape_all(self))
         self.assertGreaterEqual(actual_length, minimum_length)
+    def tearDown(self):
+        self.driver.quit()
 
 unittest.main()
