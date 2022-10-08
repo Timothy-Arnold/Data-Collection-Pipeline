@@ -3,6 +3,39 @@ import json
 import requests
 
 class Storage:
+    '''
+    This class is used to store product text and image data in my local directory.
+
+    Parameters:
+    ----------
+    details_dict: dict
+        The dictionary containing all the desired details of the laptop.
+    
+    Attributes:
+    ----------
+    details_dict: dict
+        The dictionary containing all the desired details of the laptop.
+    product_id: str
+        The ID of the product which was scraped from it's product page.
+    image_url: str
+        The URL of the image of the laptop
+    product_path: str
+        The path on my PC where I want the details of the laptop to go.
+
+    Methods:
+    -------
+    create_raw_data_folder()
+        Creates a raw_data folder in the root if it doesn't already exist.
+    create_product_folder()
+        Creates a product folder in the raw_data folder, named by the product's ID.
+    create_image_folder()
+        Creates an image folder in the product folder if it doesn't already exist.
+    download_image()
+        Stores the image as a .jpg file in the image folder.
+    download_all_data
+        Executes all of the above methods.
+
+    '''
     def __init__(self, details_dict):
         self.details_dict = details_dict
         self.product_id = self.details_dict["ASIN"]
@@ -21,7 +54,7 @@ class Storage:
         image_folder_path = self.product_path + f"/images"
         if not os.path.exists(image_folder_path):
             os.mkdir(image_folder_path)
-        
+
     def __download_image(self):
         image_file_path = self.product_path + f"/images/{self.product_id}"
         image_data = requests.get(self.image_url).content
