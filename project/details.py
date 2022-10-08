@@ -78,9 +78,9 @@ class Details:
         self.details_dict["UUID"] = Details.__assign_uuid(self)
         return self.details_dict
 
-URL = "https://www.amazon.co.uk/HUAWEI-Matebook-16s-i9-12900H-Processor/dp/B0B56RJGSR/ref=sr_1_19?keywords=laptop&qid=1664919140&qu=eyJxc2MiOiI5LjQzIiwicXNhIjoiOC44MSIsInFzcCI6IjguMTkifQ%3D%3D&sr=8-19"
+test_URL = "https://www.amazon.co.uk/CHUWI-GemiBook-2160x1440-Intel-Processor/dp/B08NPCBGSZ/ref=sr_1_12?crid=3E23J6SE3Y156&keywords=laptop&qid=1665235352&qu=eyJxc2MiOiI5LjQzIiwicXNhIjoiOC44MSIsInFzcCI6IjguMTkifQ%3D%3D&sprefix=laptop%2Caps%2C95&sr=8-12"
 
 if __name__ == '__main__':
-    extraction = Details(URL)
+    extraction = Details(test_URL)
     extraction.extract_all_data()
     print(extraction.details_dict)
