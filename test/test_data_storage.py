@@ -31,4 +31,4 @@ class StorageTestCase(unittest.TestCase):
         self.assertIsFile(pl.Path(path_4))
 
 if __name__ == '__main__':      
-    unittest.main()
+    unittest.main(verbosity=2)

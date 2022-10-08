@@ -15,4 +15,4 @@ class ScraperTestCase(unittest.TestCase):
         self.assertEqual(len(non_website_list), 0)
 
 if __name__ == '__main__':   
-    unittest.main()
+    unittest.main(verbosity=2)
