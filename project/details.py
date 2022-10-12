@@ -2,17 +2,16 @@ import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support import expected_conditions as EC
 import uuid
 
 class Details:
     '''
-    This class is used to find all of the text and image data required from a laptop product page on Amazon.
+    This class is used to find all of the text and image data required from a laptop product page on box.
 
     Parameters:
     ----------
     URL: str
-        The URL of the laptop's page on Amazon.
+        The URL of the laptop's page on box.
     
     Attributes:
     ----------
@@ -21,10 +20,16 @@ class Details:
 
     Methods:
     -------
-    extract_text_data()
-        Finds all the desired text data on the webpage
-    extract_img_data()
-        Finds the first display image of the laptop
+    extract_price()
+        Finds the price of the laptop
+    click_specifications()
+        Clicks the specifications tab on the laptop page
+    extract_technical_data()
+        Finds the four pieces of technical data in the specifications table
+    extract_stock_code()
+        Finds the stock code of the laptop
+    extract_img_data
+        Finds the url of the first image of the laptop
     assign_uuid()
         Generates a random uuid for the laptop
     extract_all_data()
