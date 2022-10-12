@@ -38,7 +38,7 @@ class Storage:
     '''
     def __init__(self, details_dict):
         self.details_dict = details_dict
-        self.product_id = self.details_dict["ASIN"]
+        self.product_id = self.details_dict["Stock Code"]
         self.image_url = self.details_dict["Image"]
         self.product_path = f"C:/Users/timcy/Documents/Aicore/Data-Collection-Pipeline/raw_data/{self.product_id}"
 
@@ -67,9 +67,8 @@ class Storage:
         Storage.__create_image_folder(self)
         Storage.__download_image(self)
 
-test_details_dict = {'Price': '£299.00', 'Brand': 'CHUWI', 'Standing screen display size': '14 Inches', 'Screen Resolution': '2160x1440 Pixels', 'RAM Size': '8 GB', 'Item Weight': '1.5 kg', 'ASIN': 'B08NPCBGSZ', 'Image': 'https://m.media-amazon.com/images/I/61GmFJrsGwL._AC_SX679_.jpg', 'UUID': '83cbd88b-449b-4740-865c-d7c2292e215d'}
-
 if __name__ == '__main__':
+    test_details_dict = {'Price': '£1,729.49', 'Screen Size': '14 Inches', 'Resolution': '3024 x 1964', 'Storage': '512GB', 'RAM': '16GB', 'Stock Code': '293815727', 'Image': 'https://www.box.co.uk/image?id=4816291&quality=90&maxwidth=760&maxheight=520', 'UUID': '92a3d1c7-0488-4b85-be8c-6bc9622b951e'}
     store = Storage(test_details_dict)
     store.download_all_data()
     print("Done!")
