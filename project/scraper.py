@@ -2,6 +2,8 @@ import time
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 class Scraper:
     '''
@@ -29,52 +31,47 @@ class Scraper:
         Finds all the product links in the page and stores them in the list
     next_page()
         Moves to the next page
+    scrape_all()
+        Collects the product links from all 20 pages on Amazon and stores them in the list.
     '''
-    def __init__(self, URL = "https://www.amazon.co.uk/"):
+    def __init__(self, URL = "https://www.box.co.uk/laptops"):
         self.driver = webdriver.Chrome()
         self.URL = URL
         self.link_list = []
+        time.sleep(1)
+
     def __open_webpage(self):
         self.driver.get(self.URL)
-        time.sleep(2)
-    def __input_search(self, search_string):
-        search = self.driver.find_element(By.ID, "twotabsearchtextbox")
-        search.send_keys(search_string)
-        search.send_keys(Keys.RETURN)
-        time.sleep(1)
-    def __accept_cookies(self):
-        try:
-            accept_cookies_button = self.driver.find_element(By.ID, "sp-cc-accept")
-            accept_cookies_button.click()
-        except:
-            pass
+        time.sleep(3)
+
     def __get_links(self):
-        product_container = self.driver.find_element(By.XPATH, '//div[@class = "s-main-slot s-result-list s-search-results sg-row"]')
-        product_list = product_container.find_elements(By.XPATH, '//div[@class = "s-result-item s-asin sg-col-0-of-12 sg-col-16-of-20 sg-col s-widget-spacing-small sg-col-12-of-16"]')
+        product_container = self.driver.find_element(By.XPATH, '//div[@class = "product-list  "]')
+        product_list_1 = product_container.find_elements(By.XPATH, '//div[@class = "product-list-item "]')
+        product_list_2 = product_container.find_elements(By.XPATH, '//div[@class = "product-list-item middle"]')
+        product_list = product_list_1 + product_list_2
         for product in product_list:
-            a_tag = product.find_element(by=By.TAG_NAME, value='a')
+            a_tag = product.find_element(By.TAG_NAME, 'a')
             link = a_tag.get_attribute("href")
             self.link_list.append(link)
         time.sleep(1)
-    def __next_page(self):
-        next_button = self.driver.find_element(By.XPATH, '//a[@class = "s-pagination-item s-pagination-next s-pagination-button s-pagination-separator"]')
-        next_button.send_keys(Keys.RETURN)
+
+    def __go_to_page(self, page_number):
+        self.URL = f"https://www.box.co.uk/laptops/page/{page_number}"
+        self.driver.get(self.URL)
         time.sleep(1)
 
-    def scrape_all(self):
+    def scrape_all(self, number_of_pages = 20):
         Scraper.__open_webpage(self)
-        Scraper.__accept_cookies(self)
-        Scraper.__input_search(self, "laptop")
-        # Get first page's links
+        # Get the first page's links
         Scraper.__get_links(self)
-        for page in range(19):
-            Scraper.__next_page(self)
+        for page_number in range(2, number_of_pages + 1):
+            Scraper.__go_to_page(self, page_number)
             Scraper.__get_links(self)
         return self.link_list
-        time.sleep(5)
+        time.sleep(10)
 
 if __name__ == '__main__':
     scrape = Scraper()
-    scrape.scrape_all()
+    scrape.scrape_all(10)
     print(scrape.link_list)
     print(f'There are {len(scrape.link_list)} properties in this page')
