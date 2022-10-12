@@ -35,7 +35,7 @@ class Details:
         self.URL = URL
         self.driver.get(URL)
         time.sleep(1)
-        self.required_details = ["Price", "Screen Size", "Screen Resolution", "Total Storage", "RAM", "Stock Code", "Image", "UUID"]
+        self.required_details = ["Price", "Screen Size", "Resolution", "Storage", "RAM", "Stock Code", "Image", "UUID"]
         self.initial_values = ["Unknown"] * 8
         self.details_dict = {self.required_details[i]: self.initial_values[i] for i in range(8)}
 
@@ -61,9 +61,16 @@ class Details:
                 screen_specs = values[index_1].text
                 screen_size = screen_specs.split('"')[0]
                 self.details_dict["Screen Size"] = screen_size + " Inches"
-            for index_2 in range(2,5):
-                if names[index_1].text == self.required_details[index_2]:
-                    self.details_dict[self.required_details[index_2]] = values[index_1].text
+            if names[index_1].text == "Screen Resolution":
+                self.details_dict["Resolution"] = values[index_1].text
+            if names[index_1].text == "Total Storage":
+                total_storage = values[index_1].text
+                storage_amount = total_storage[:total_storage.index('B') + 1]
+                self.details_dict["Storage"] = storage_amount
+            if names[index_1].text == "RAM":
+                ram_full = values[index_1].text
+                ram_amount = ram_full[:ram_full.index('B') + 1]
+                self.details_dict["RAM"] = ram_amount
 
         return self.details_dict
     
@@ -91,7 +98,7 @@ class Details:
         return self.details_dict
 
 if __name__ == '__main__':
-    test_URL = "https://www.box.co.uk/9S7-14C612-043-MSI-Prestige-14Evo-Intel-Core-i7-16GB-RA_4110589.html"
+    test_URL = "https://www.box.co.uk/Apple-MacBook-Pro-14-M1-Pro-Chip-16GB-R_3986819.html"
     extraction = Details(test_URL)
     extraction.extract_all_data()
     print(extraction.details_dict)
