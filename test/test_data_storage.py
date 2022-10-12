@@ -4,10 +4,10 @@ import pathlib as pl
 
 class StorageTestCase(unittest.TestCase):
 
-    def setUp(self, details_dict = {'Price': '£299.00', 'Brand': 'CHUWI', 'Standing screen display size': '14 Inches', 'Screen Resolution': '2160x1440 Pixels', 'RAM Size': '8 GB', 'Item Weight': '1.5 kg', 'ASIN': 'B08NPCBGSZ', 'Image': 'https://m.media-amazon.com/images/I/61GmFJrsGwL._AC_SX679_.jpg', 'UUID': '83cbd88b-449b-4740-865c-d7c2292e215d'}):
+    def setUp(self, details_dict = {'Price': '£312.49', 'Screen Size': '12 Inches', 'Resolution': '1366 x 912', 'Storage': '32GB', 'RAM': '4GB', 'Stock Code': '6520758', 'Image': 'https://www.box.co.uk/image?id=4539297&quality=90&maxwidth=760&maxheight=520', 'UUID': 'f30001ea-4088-4ccc-bf36-871bb272713f'}):
         store = Storage(details_dict)
         store.download_all_data()
-        self.product_id = details_dict["ASIN"]
+        self.product_id = details_dict["Stock Code"]
         self.image_url = details_dict["Image"]
         self.product_path = f"C:/Users/timcy/Documents/Aicore/Data-Collection-Pipeline/raw_data/{self.product_id}/"
 
