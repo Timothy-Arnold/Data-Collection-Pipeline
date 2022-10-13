@@ -68,7 +68,7 @@ class Storage:
         Storage.__download_image(self)
 
 if __name__ == '__main__':
-    test_details_dict = {'Price': '£1,729.49', 'Screen Size': '14 Inches', 'Resolution': '3024 x 1964', 'Storage': '512GB', 'RAM': '16GB', 'Stock Code': '293815727', 'Image': 'https://www.box.co.uk/image?id=4816291&quality=90&maxwidth=760&maxheight=520', 'UUID': '92a3d1c7-0488-4b85-be8c-6bc9622b951e'}
+    test_details_dict = {'Price': '£229.99', 'Screen Size': '14 Inches', 'Resolution': '1366 x 768', 'Storage': '64GB', 'RAM': '4GB', 'Stock Code': '79519411', 'Image': 'https://www.box.co.uk/image?id=4603979&quality=90&maxwidth=760&maxheight=520', 'UUID': '1ff86a83-6316-4cfb-a9ad-47ca1daa6390'}
     store = Storage(test_details_dict)
     store.download_all_data()
     print("Done!")
