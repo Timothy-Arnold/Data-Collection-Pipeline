@@ -7,7 +7,6 @@ import uuid
 class Details:
     '''
     This class is used to find all of the text and image data required from a laptop product page on box.
-
     Parameters:
     ----------
     URL: str
@@ -17,7 +16,6 @@ class Details:
     ----------
     details_dict: dict
         The dictionary containing all the desired details of the laptop
-
     Methods:
     -------
     extract_price()
@@ -100,10 +98,11 @@ class Details:
         self.details_dict["Stock Code"] = Details.__extract_stock_code(self)
         self.details_dict["Image"] = Details.__extract_img_data(self)
         self.details_dict["UUID"] = Details.__assign_uuid(self)
+        self.driver.quit()
         return self.details_dict
 
 if __name__ == '__main__':
     test_URL = "https://www.box.co.uk/Apple-MacBook-Pro-14-M1-Pro-Chip-16GB-R_3986819.html"
     extraction = Details(test_URL)
-    extraction.extract_all_data()
-    print(extraction.details_dict)
+    details_dict = extraction.extract_all_data()
+    print(details_dict)
