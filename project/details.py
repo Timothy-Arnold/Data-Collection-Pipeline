@@ -33,11 +33,8 @@ class Details:
     extract_all_data()
         Puts all the above data into the details dictionary
     '''
-    def __init__(self, URL):
-        self.driver = webdriver.Chrome()
-        self.URL = URL
-        self.driver.get(URL)
-        time.sleep(1)
+    def __init__(self, driver):
+        self.driver = driver
         self.required_details = ["Price", "Screen Size", "Resolution", "Storage", "RAM", "Stock Code", "Image", "UUID"]
         self.initial_values = ["Unknown"] * 8
         self.details_dict = {self.required_details[i]: self.initial_values[i] for i in range(8)}
@@ -98,11 +95,12 @@ class Details:
         self.details_dict["Stock Code"] = Details.__extract_stock_code(self)
         self.details_dict["Image"] = Details.__extract_img_data(self)
         self.details_dict["UUID"] = Details.__assign_uuid(self)
-        self.driver.quit()
         return self.details_dict
 
 if __name__ == '__main__':
+    driver = webdriver.Chrome()
     test_URL = "https://www.box.co.uk/Apple-MacBook-Pro-14-M1-Pro-Chip-16GB-R_3986819.html"
-    extraction = Details(test_URL)
+    driver.get(test_URL)
+    extraction = Details(driver)
     details_dict = extraction.extract_all_data()
     print(details_dict)
