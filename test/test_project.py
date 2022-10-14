@@ -8,13 +8,6 @@ import pathlib as pl
 import unittest
 import random
 
-# suite_1 = unittest.TestLoader().loadTestsFromModule(test.test_scraper)
-# suite_2 = unittest.TestLoader().loadTestsFromModule(test.test_details)
-# suite_3 = unittest.TestLoader().loadTestsFromModule(test.test_data_storage)
-# unittest.TextTestRunner(verbosity=2).run(suite_1)
-# unittest.TextTestRunner(verbosity=2).run(suite_2)
-# unittest.TextTestRunner(verbosity=2).run(suite_3)
-
 class ProjectTestCase(unittest.TestCase):
     
     def assertIsFile(self, path):
@@ -29,7 +22,7 @@ class ProjectTestCase(unittest.TestCase):
         details_dict = extraction.extract_all_data()
         store = Storage(details_dict)
         store.download_all_data()
-        product_id = details_dict["ASIN"]
+        product_id = details_dict["Stock Code"]
         image_path = f"C:/Users/timcy/Documents/Aicore/Data-Collection-Pipeline/raw_data/{product_id}/images/{product_id}.jpg"
         self.assertIsFile(pl.Path(image_path))
 
