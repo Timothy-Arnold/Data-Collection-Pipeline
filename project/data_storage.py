@@ -1,6 +1,7 @@
 import os
 import json
 import requests
+import boto3
 
 class Storage:
     '''
@@ -67,8 +68,14 @@ class Storage:
         Storage.__create_image_folder(self)
         Storage.__download_image(self)
 
+    def upload_data(self):
+        s3_client = boto3.client("s3")
+        s3_client.upload_file(f"../raw_data/{self.product_id}/images/{self.product_id}.jpg", "aicore-box-datalake", f"{self.product_id}.jpg")
+        s3_client.upload_file(f"../raw_data/{self.product_id}/data.json", "aicore-box-datalake", f"{self.product_id}.json")
+
 if __name__ == '__main__':
     test_details_dict = {'Price': '£229.99', 'Screen Size': '14 Inches', 'Resolution': '1366 x 768', 'Storage': '64GB', 'RAM': '4GB', 'Stock Code': '79519411', 'Image': 'https://www.box.co.uk/image?id=4603979&quality=90&maxwidth=760&maxheight=520', 'UUID': '1ff86a83-6316-4cfb-a9ad-47ca1daa6390'}
     store = Storage(test_details_dict)
     store.download_all_data()
+    store.upload_data()
     print("Done!")
