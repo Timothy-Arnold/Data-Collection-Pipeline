@@ -3,6 +3,7 @@ from selenium import webdriver
 from scraper import Scraper
 from details import Details
 from data_storage import Storage
+import boto3
 
 def do_full_scrape():
     scrape = Scraper()
@@ -27,7 +28,8 @@ def do_full_scrape():
     for details_dict in details_dict_list:
         store = Storage(details_dict)
         store.download_all_data()
-    print("All downloaded!")
+        store.upload_data()
+    print("All downloaded and uploaded!")
 
 if __name__ == '__main__':
     do_full_scrape()
