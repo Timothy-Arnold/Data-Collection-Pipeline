@@ -22,6 +22,8 @@ def do_full_scrape():
             details_dict_list.append(details_dict)
         except:
             pass
+    number_of_products = len(details_dict_list)
+    print(f"{number_of_products} laptops have been scraped")
     for details_dict in details_dict_list:
         store = Storage(details_dict)
         store.download_all_data()
