@@ -1,16 +1,16 @@
-import boto3
+import time
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from details import Details
 from scraper import Scraper
 from data_storage import Storage
-import time
-from selenium import webdriver
 
 def do_full_scrape():
     '''
     Scrapes laptops from the box website.
     
     This function scrapes the first 15 pages of laptops' product page urls on the box website, then accesses these URLs to get the information of each laptop.
-    It then stores this technical and image data in my local directory, as well as uploads it to an S3 bucket.
+    It then stores this technical and image data in my local directory, as well as uploads it to my S3 bucket.
 
     Parameters
     ----------
@@ -20,16 +20,18 @@ def do_full_scrape():
     ----------
     None
     '''
-    scrape = Scraper(2)
+    scrape = Scraper()
     link_list = scrape.scrape_all()
     print(link_list)
     time.sleep(2)
     # Initialize list of detail_dict's
     details_dict_list = []
-    driver = webdriver.Chrome()
+    chromeOptions = Options()
+    chromeOptions.headless = False
+    driver = webdriver.Chrome(options=chromeOptions)
     for link in link_list:
         driver.get(link)
-        time.sleep(2)
+        time.sleep(3)
         try:
             extraction = Details(driver)
             details_dict = extraction.extract_all_data()
