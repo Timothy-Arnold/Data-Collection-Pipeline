@@ -3,10 +3,9 @@ import json
 import os
 import requests
 
-
 class Storage:
     '''
-    This class is used to store product text and image data in my local directory, as well as upload it to my S3 bucket
+    This class is used to store the laptops' text and image data in my local directory, as well as upload it to my S3 bucket
 
     Parameters:
     ----------
@@ -39,7 +38,7 @@ class Storage:
     upload_all_data()
         Takes the data (the json and jpeg file) of the product and uploads both files to my own S3 bucket.
     '''
-    def __init__(self, details_dict):
+    def __init__(self, details_dict: dict):
         self.details_dict = details_dict
         self.product_id = self.details_dict["Stock Code"]
         self.image_url = self.details_dict["Image"]
