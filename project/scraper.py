@@ -1,6 +1,7 @@
+import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-import time
+from selenium.webdriver.chrome.options import Options
 
 class Scraper:
     '''
@@ -30,7 +31,9 @@ class Scraper:
         Collects the product links from all 15 pages on box and stores them in the list.
     '''
     def __init__(self, number_of_pages=15):
-        self.driver = webdriver.Chrome()
+        chromeOptions = Options()
+        chromeOptions.headless = True
+        self.driver = webdriver.Chrome(options=chromeOptions)
         self.link_list = []
         self.number_of_pages = number_of_pages
         time.sleep(1)

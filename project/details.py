@@ -1,13 +1,14 @@
+import time
+import uuid
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-import time
-import uuid
+from selenium.webdriver.chrome.options import Options
 
 class Details:
     '''
     This class is used to find all of the text and image data required from a laptop product page on box.
-    
+
     Parameters:
     ----------
     URL: str
@@ -23,7 +24,7 @@ class Details:
     extract_price()
         Finds the price of the laptop
     click_specifications()
-        Clicks the specifications tab on the laptop page
+        Clicks the specifications tab on the laptop's page
     extract_technical_data()
         Finds the four pieces of technical data in the specifications table
     extract_stock_code()
@@ -100,7 +101,9 @@ class Details:
         return self.details_dict
 
 if __name__ == '__main__':
-    driver = webdriver.Chrome()
+    chromeOptions = Options()
+    chromeOptions.headless = True
+    driver = webdriver.Chrome(options=chromeOptions)
     test_URL = "https://www.box.co.uk/82JU00PDUK-Lenovo-Legion-5-AMD-Ryzen-5-8GB-RAM-512G_4095715.html"
     driver.get(test_URL)
     extraction = Details(driver)
