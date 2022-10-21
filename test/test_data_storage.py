@@ -1,6 +1,6 @@
-from project.data_storage import Storage
-import unittest
 import pathlib as pl
+import unittest
+from project.data_storage import Storage
 
 class StorageTestCase(unittest.TestCase):
 

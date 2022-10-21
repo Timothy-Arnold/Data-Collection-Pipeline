@@ -1,11 +1,15 @@
-from project.details import Details
 import unittest
+from project.details import Details
+from selenium import webdriver
 
 class DetailsTestCase(unittest.TestCase):
 
     def setUp(self, URL = ""):
-        extraction = Details(URL)
-        detail_dict = extraction.extract_all_data("https://www.box.co.uk/Acer-Aspire-1-Microsoft-365-Intel-Cele_3213588.html")
+        driver = webdriver.Chrome()
+        test_URL = "https://www.box.co.uk/Acer-Aspire-1-Microsoft-365-Intel-Cele_3213588.html"
+        driver.get(test_URL)
+        extraction = Details(driver)
+        detail_dict = extraction.extract_all_data()
         self.values = detail_dict.values()
 
     def test_extract_all_data(self):
