@@ -1,11 +1,12 @@
-import os
-import json
-import requests
 import boto3
+import json
+import os
+import requests
+
 
 class Storage:
     '''
-    This class is used to store product text and image data in my local directory.
+    This class is used to store product text and image data in my local directory, as well as upload it to my S3 bucket
 
     Parameters:
     ----------
@@ -33,9 +34,10 @@ class Storage:
         Creates an image folder in the product folder if it doesn't already exist.
     download_image()
         Stores the image as a .jpg file in the image folder.
-    download_all_data
+    download_all_data()
         Executes all of the above methods.
-
+    upload_all_data()
+        Takes the data (the json and jpeg file) of the product and uploads both files to my own S3 bucket.
     '''
     def __init__(self, details_dict):
         self.details_dict = details_dict
@@ -68,7 +70,7 @@ class Storage:
         Storage.__create_image_folder(self)
         Storage.__download_image(self)
 
-    def upload_data(self):
+    def upload_all_data(self):
         s3_client = boto3.client("s3")
         s3_client.upload_file(f"../raw_data/{self.product_id}/images/{self.product_id}.jpg", "aicore-box-datalake", f"{self.product_id}.jpg")
         s3_client.upload_file(f"../raw_data/{self.product_id}/data.json", "aicore-box-datalake", f"{self.product_id}.json")

@@ -1,12 +1,13 @@
-import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+import time
 import uuid
 
 class Details:
     '''
     This class is used to find all of the text and image data required from a laptop product page on box.
+    
     Parameters:
     ----------
     URL: str
@@ -16,6 +17,7 @@ class Details:
     ----------
     details_dict: dict
         The dictionary containing all the desired details of the laptop
+
     Methods:
     -------
     extract_price()
@@ -35,9 +37,9 @@ class Details:
     '''
     def __init__(self, driver):
         self.driver = driver
-        self.required_details = ["Price", "Screen Size", "Resolution", "Storage", "RAM", "Stock Code", "Image", "UUID"]
-        self.initial_values = ["Unknown"] * 8
-        self.details_dict = {self.required_details[i]: self.initial_values[i] for i in range(8)}
+        required_details = ["Price", "Screen Size", "Resolution", "Storage", "RAM", "Stock Code", "Image", "UUID"]
+        initial_values = ["Unknown"] * 8
+        self.details_dict = {required_details[i]: initial_values[i] for i in range(8)}
 
     def __extract_price(self):
         price = self.driver.find_element(By.XPATH, '//span[@class="pq-price"]').text
@@ -99,8 +101,9 @@ class Details:
 
 if __name__ == '__main__':
     driver = webdriver.Chrome()
-    test_URL = "https://www.box.co.uk/Apple-MacBook-Pro-14-M1-Pro-Chip-16GB-R_3986819.html"
+    test_URL = "https://www.box.co.uk/82JU00PDUK-Lenovo-Legion-5-AMD-Ryzen-5-8GB-RAM-512G_4095715.html"
     driver.get(test_URL)
     extraction = Details(driver)
     details_dict = extraction.extract_all_data()
+    driver.quit()
     print(details_dict)

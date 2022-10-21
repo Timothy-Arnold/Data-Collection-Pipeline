@@ -1,7 +1,6 @@
-import time
 from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
+import time
 
 class Scraper:
     '''
@@ -16,6 +15,8 @@ class Scraper:
     ----------
     link_list: list
         The list of URLs of all the product pages
+    number_of_pages: int
+        The number of pages of laptops on box whose URL's are going to be scraped.
 
     Methods:
     -------
@@ -30,13 +31,12 @@ class Scraper:
     '''
     def __init__(self, number_of_pages=15):
         self.driver = webdriver.Chrome()
-        self.URL = "https://www.box.co.uk/laptops"
         self.link_list = []
         self.number_of_pages = number_of_pages
         time.sleep(1)
 
     def __open_webpage(self):
-        self.driver.get(self.URL)
+        self.driver.get("https://www.box.co.uk/laptops")
         time.sleep(2)
 
     def __get_links(self):
@@ -50,8 +50,8 @@ class Scraper:
             self.link_list.append(link)
 
     def __go_to_page(self, page_number):
-        self.URL = f"https://www.box.co.uk/laptops/page/{page_number}"
-        self.driver.get(self.URL)
+        page_url = f"https://www.box.co.uk/laptops/page/{page_number}"
+        self.driver.get(page_url)
         time.sleep(1)
 
     def scrape_all(self):
@@ -61,10 +61,12 @@ class Scraper:
         for page_number in range(2, self.number_of_pages + 1):
             Scraper.__go_to_page(self, page_number)
             Scraper.__get_links(self)
+        self.driver.quit()
         return self.link_list
 
 if __name__ == '__main__':
-    scrape = Scraper(8)
+    scrape = Scraper(2)
     scrape.scrape_all()
     print(scrape.link_list)
-    print(f'There are {len(scrape.link_list)} properties in this page')
+    print(f"{len(scrape.link_list)} laptops' urls have been scraped")
+    
