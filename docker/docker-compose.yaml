@@ -1,0 +1,7 @@
+# version: '2.12.0'
+
+# services:
+#   selenium:
+#     image: selenium/standalone-chrome
+#     ports:
+#     - 5432:5423
