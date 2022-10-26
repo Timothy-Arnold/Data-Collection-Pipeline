@@ -33,7 +33,7 @@ def do_full_scrape(pages=15):
     chromeOptions.add_argument('--disable-gpu')
     chromeOptions.add_argument('--disable-dev-shm-usage')
     driver = webdriver.Chrome(options=chromeOptions)
-    for link in link_list:
+    for link in link_list[:10]:
         driver.get(link)
         time.sleep(3)
         try:
