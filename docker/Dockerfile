@@ -1,16 +1,16 @@
-FROM python:latest
+FROM python:bullseye
 
 ENV PYTHONBUFFERED 1
 
-# # download warp 
-# RUN curl -o /etc/cloudflare_warp_2022_9_591_1_amd64_3e650240f8.deb https://pkg.cloudflareclient.com/uploads/cloudflare_warp_2022_9_591_1_amd64_3e650240f8.deb 
-# # updates linux packages
-# RUN apt upgrade -y
-# RUN apt update -y
-# # install systemctl to start warp service
-# RUN apt install systemctl -y
-# # install warp 
-# RUN apt install -y /etc/cloudflare_warp_2022_9_591_1_amd64_3e650240f8.deb
+# download warp 
+RUN curl -o /etc/cloudflare_warp_2022_9_591_1_amd64_3e650240f8.deb https://pkg.cloudflareclient.com/uploads/cloudflare_warp_2022_9_591_1_amd64_3e650240f8.deb 
+# updates linux packages
+RUN apt upgrade -y
+RUN apt update -y
+# install systemctl to start warp service
+RUN apt install systemctl -y
+# install warp 
+RUN apt install -y /etc/cloudflare_warp_2022_9_591_1_amd64_3e650240f8.deb
 
 #Set up selenium Chrome
 RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -

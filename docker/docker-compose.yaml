@@ -9,3 +9,4 @@ services:
       - C:/Users/timcy/Documents/Aicore/Data-Collection-Pipeline/docker:/rawdata
     tty: true               # equivalent for -t
     stdin_open: true        # equivalent for -i
+    privileged: true
