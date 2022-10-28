@@ -23,6 +23,8 @@ def do_full_scrape(pages=15):
     scrape = Scraper(pages)
     link_list = scrape.scrape_all()
     print(link_list)
+    link_list_length = len(link_list)
+    print(f"{link_list_length} links have been scraped")
     time.sleep(2)
     # Initialize list of detail_dict's
     details_dict_list = []
@@ -33,7 +35,7 @@ def do_full_scrape(pages=15):
     chromeOptions.add_argument('--disable-gpu')
     chromeOptions.add_argument('--disable-dev-shm-usage')
     driver = webdriver.Chrome(options=chromeOptions)
-    for link in link_list[:10]:
+    for link in link_list[:5]:
         driver.get(link)
         time.sleep(3)
         try:

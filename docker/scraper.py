@@ -72,7 +72,7 @@ class Scraper:
         return self.link_list
 
 if __name__ == '__main__':
-    scrape = Scraper(2)
+    scrape = Scraper()
     scrape.scrape_all()
     print(scrape.link_list)
     print(f"{len(scrape.link_list)} laptops' urls have been scraped")
