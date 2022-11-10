@@ -38,12 +38,15 @@ class FullScrape:
 
     def __start_warp(self):
         subprocess.run("systemctl enable --now warp-svc.service", shell=True, stderr=subprocess.STDOUT, timeout=60)
+        time.sleep(2)
         # Start WARP
         subprocess.run("systemctl start warp-svc.service", shell=True, stderr=subprocess.STDOUT)
         subprocess.run("systemctl status warp-svc.service", shell=True, stderr=subprocess.STDOUT)
+        time.sleep(2)
         # First register the warp-cli
         subprocess.run("warp-cli --accept-tos register", shell=True, stderr=subprocess.STDOUT, timeout=60)
         subprocess.run("warp-cli --accept-tos register", shell=True, stderr=subprocess.STDOUT, timeout=60)
+        time.sleep(2)
         # First connect to WARP
         subprocess.run("warp-cli --accept-tos connect", shell=True, stderr=subprocess.STDOUT)
         print(subprocess.run("warp-cli --accept-tos status", shell=True, stderr=subprocess.STDOUT))
@@ -97,5 +100,5 @@ class FullScrape:
         FullScrape.__store_raw_data(self)
 
 if __name__ == '__main__':
-    full_scrape = FullScrape(15)
+    full_scrape = FullScrape(3)
     full_scrape.do_full_scrape()
