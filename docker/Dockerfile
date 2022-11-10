@@ -1,18 +1,12 @@
 FROM python:bullseye
 
-ENV PYTHONBUFFERED 1
-
-# download warp 
-RUN curl -o /etc/cloudflare_warp_2022_9_591_1_amd64_3e650240f8.deb https://pkg.cloudflareclient.com/uploads/cloudflare_warp_2022_9_591_1_amd64_3e650240f8.deb 
-# updates linux packages
-RUN apt upgrade -y
 RUN apt update -y
-# install systemctl to start warp service
-RUN apt install systemctl -y
-# install warp 
-RUN apt install -y /etc/cloudflare_warp_2022_9_591_1_amd64_3e650240f8.deb
 
 #Set up selenium Chrome
+
+RUN apt-get install -y wget 
+RUN apt-get install -y gnupg2
+RUN apt-get install -y curl
 RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
 RUN sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
 RUN apt-get -y update
@@ -21,13 +15,24 @@ RUN wget -O /tmp/chromedriver.zip http://chromedriver.storage.googleapis.com/`cu
 RUN apt-get install -yqq unzip
 RUN unzip /tmp/chromedriver.zip chromedriver -d /usr/local/bin/
 
+RUN wget -O cloudflare_warp_2022_9_591_1_amd64_ba53b9eb5d.deb https://pkg.cloudflareclient.com/uploads/cloudflare_warp_2022_9_591_1_amd64_3e650240f8.deb 
+RUN apt-get install -y systemctl
+RUN apt-get install -y libcap2
+RUN apt-get install -y nftables
+RUN apt-get install -y libcap2-bin
+RUN apt-get install -y libdbus-1-3
+RUN apt-get install -y desktop-file-utils
+RUN dpkg -i cloudflare_warp_2022_9_591_1_amd64_ba53b9eb5d.deb
+RUN rm cloudflare_warp_2022_9_591_1_amd64_ba53b9eb5d.deb
+RUN systemctl start warp-svc.service
+
 RUN mkdir /app
 
 WORKDIR /app
 
+COPY scraper.py details.py project.py data_storage.py /app/
+
 COPY ./requirements.txt /requirements.txt
 RUN pip install -r /requirements.txt
 
-COPY scraper.py details.py project.py data_storage.py /app/
-
-ENTRYPOINT ["python3", "project.py"]
+CMD ["python3", "project.py"]
