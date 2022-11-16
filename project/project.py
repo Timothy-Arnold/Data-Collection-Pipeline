@@ -20,7 +20,7 @@ def do_full_scrape():
     ----------
     None
     '''
-    scrape = Scraper()
+    scrape = Scraper(2)
     link_list = scrape.scrape_all()
     print(link_list)
     time.sleep(2)
@@ -48,4 +48,4 @@ def do_full_scrape():
     print("All downloaded and uploaded!")
 
 if __name__ == '__main__':
-    do_full_scrape()
+    do_full_scrape(2)
