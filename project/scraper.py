@@ -32,7 +32,7 @@ class Scraper:
     '''
     def __init__(self, number_of_load_more_clicks=2):
         chromeOptions = Options()
-        chromeOptions.headless = False
+        chromeOptions.headless = True
         self.driver = webdriver.Chrome(options=chromeOptions)
         self.link_list = []
         self.number_of_load_more_clicks = number_of_load_more_clicks
@@ -57,22 +57,18 @@ class Scraper:
             self.link_list.append(link)
         time.sleep(2)
 
-    def __go_to_page(self, page_number):
-        page_url = f"https://www.laptopsdirect.co.uk/ct/laptops-and-netbooks/laptops?pageNumber={page_number}"
-        self.driver.get(page_url)
-        time.sleep(1)
-
     def scrape_all(self):
         Scraper.__open_webpage(self)
         for click in range(self.number_of_load_more_clicks):
             Scraper.__click_load_more(self)
-            time.sleep(3)
+            time.sleep(2)
         Scraper.__get_links(self)
         return self.link_list
 
 if __name__ == '__main__':
-    scrape = Scraper(3)
+    scrape = Scraper()
     scrape.scrape_all()
     print(scrape.link_list)
     print(f"{len(scrape.link_list)} laptops' urls have been scraped")
-    
+    time.sleep(5)
+    scrape.driver.quit()
