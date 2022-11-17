@@ -5,30 +5,30 @@ from selenium.webdriver.chrome.options import Options
 
 class Scraper:
     '''
-    This class is used to collect all the URLs of product listings on box for the first 15 pages of laptops.
+    This class is used to collect all the URLs of the first 210 movies on rottentomatoes' "Most Popular Movies at Home" page'
 
     Parameters:
     ----------
     URL: str
-        The URL of box's laptop section
+        The URL of rottentomatoes' "Most Popular Movies at Home" page
     
     Attributes:
     ----------
     link_list: list
-        The list of URLs of all the product pages
+        The list of URLs of all the movie pages' URLs
     number_of_pages: int
-        The number of pages of laptops on box whose URL's are going to be scraped.
+        The number of times the "Load more" button is clicked, to view more movies
 
     Methods:
     -------
     open_webpage()
-        Opens the Amazon front page
+        Opens the rottentomatoes "Most Popular Movies at Home" page
+    click_load_more()
+        Clicks the load more button at the bottom of the page to show more movies
     get_links()
-        Finds all the product links in the page and stores them in the list
-    go_to_page(page_number)
-        Moves to the given page number
+        Finds all the movie links in the page and stores them in the list
     scrape_all()
-        Collects the product links from all 15 pages on box and stores them in the list.
+        Collects the movie links from the whole extended page and stores them in the list.
     '''
     def __init__(self, number_of_load_more_clicks=2):
         chromeOptions = Options()
