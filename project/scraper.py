@@ -30,12 +30,12 @@ class Scraper:
     scrape_all()
         Collects the product links from all 15 pages on box and stores them in the list.
     '''
-    def __init__(self, number_of_pages=6):
+    def __init__(self, number_of_load_more_clicks=2):
         chromeOptions = Options()
         chromeOptions.headless = False
         self.driver = webdriver.Chrome(options=chromeOptions)
         self.link_list = []
-        self.number_of_pages = number_of_pages
+        self.number_of_load_more_clicks = number_of_load_more_clicks
         time.sleep(2)
 
     def __open_webpage(self):
@@ -55,7 +55,6 @@ class Scraper:
             # a_tag = product.find_element(By.TAG_NAME, 'a')
             link = product.get_attribute("href")
             self.link_list.append(link)
-        print("Links gotten!")
         time.sleep(2)
 
     def __go_to_page(self, page_number):
@@ -65,12 +64,14 @@ class Scraper:
 
     def scrape_all(self):
         Scraper.__open_webpage(self)
-        Scraper.__click_load_more(self)
+        for click in range(self.number_of_load_more_clicks):
+            Scraper.__click_load_more(self)
+            time.sleep(3)
         Scraper.__get_links(self)
         return self.link_list
 
 if __name__ == '__main__':
-    scrape = Scraper(2)
+    scrape = Scraper(3)
     scrape.scrape_all()
     print(scrape.link_list)
     print(f"{len(scrape.link_list)} laptops' urls have been scraped")
