@@ -53,7 +53,6 @@ class FullScrape:
                 print("Faulty link!")
                 pass
             time.sleep(1)
-            print(len(self.details_dict_list))
 
         number_of_products = len(self.details_dict_list)
         print(f"{number_of_products} movies have been scraped")
