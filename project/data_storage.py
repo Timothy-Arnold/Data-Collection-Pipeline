@@ -38,7 +38,7 @@ class Storage:
     '''
     def __init__(self, details_dict: dict):
         self.details_dict = details_dict
-        movie_title_underscores = self.details_dict["Title"].replace(" ", "_")
+        movie_title_underscores = self.details_dict["Title"].replace(" ", "_").replace("/", "_")
         self.movie_title = re.sub('[:;!?]', '', movie_title_underscores)
         self.image_url = self.details_dict["Image"]
         self.product_path = f"C:/Users/timcy/Documents/Aicore/Data-Collection-Pipeline/raw_data/{self.movie_title}"
@@ -69,7 +69,7 @@ class Storage:
         Storage.__download_image(self)
 
 if __name__ == '__main__':
-    test_details_dict = {'Title': 'What Is a Woman? (2022)', 'Tomatometer': '83%', 'Audience Score': '96%', 'US Box Office': 'Unknown', 'Release Date (Streaming)': 'Jun 1, 2022', 'Age Rating': 'Unknown', 'Time of Scrape': 'Fri Nov 18 18:21:43 2022', 'Image': 'https://resizing.flixster.com/Lc4GOUXt1W-E0RgG6CCvLL-tclk=/206x305/v2/https://resizing.flixster.com/6cMwGg4yBwCUKoDOsoeWay-5nBo=/ems.cHJkLWVtcy1hc3NldHMvbW92aWVzL2E2ZWQyZTllLWVhZmMtNGI2YS1hM2UyLTg1YjI1MTgwY2JiNi5qcGc=', 'UUID': '6f79e62e-0248-40f4-92c3-c5561d01f75f'}
+    test_details_dict = {'Title': 'Sell/Buy/Date (2022)', 'Tomatometer': '71%', 'Audience Score': '86%', 'US Box Office': 'Unknown', 'Release Date (Streaming)': 'Nov 8, 2022', 'Age Rating': 'Unknown', 'Time of Scrape': 'Fri Nov 18 18:46:01 2022', 'Image': 'https://resizing.flixster.com/TPL6sElwV9yH--7cQGFpNjNkHoM=/206x305/v2/https://resizing.flixster.com/_rcrP2auKC_ifdihU333b8_9_GU=/ems.cHJkLWVtcy1hc3NldHMvbW92aWVzLzZhYmY0M2JjLTI4MzQtNDE4MS1hZDZjLWRjYjMyZTgxNWJmNy5qcGc=', 'UUID': '072c573a-01c7-4e71-ae45-abaa89f4ea10'}
     store = Storage(test_details_dict)
     store.download_all_data()
     print("Done!")
