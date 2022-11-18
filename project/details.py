@@ -97,7 +97,7 @@ if __name__ == '__main__':
     chromeOptions = Options()
     chromeOptions.headless = True
     driver = webdriver.Chrome(options=chromeOptions)
-    test_URL = "https://www.rottentomatoes.com/m/uncharted_2022"
+    test_URL = "https://www.rottentomatoes.com/m/blade_runner_2049"
     driver.get(test_URL)
     time.sleep(4)
     extraction = Details(driver)
