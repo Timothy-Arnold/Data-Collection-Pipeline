@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import requests
 
 class Storage:
@@ -37,7 +38,8 @@ class Storage:
     '''
     def __init__(self, details_dict: dict):
         self.details_dict = details_dict
-        self.movie_title = self.details_dict["Title"].replace(" ", "_")
+        movie_title_underscores = self.details_dict["Title"].replace(" ", "_")
+        self.movie_title = re.sub('[:;!?]', '', movie_title_underscores)
         self.image_url = self.details_dict["Image"]
         self.product_path = f"C:/Users/timcy/Documents/Aicore/Data-Collection-Pipeline/raw_data/{self.movie_title}"
 
@@ -67,7 +69,7 @@ class Storage:
         Storage.__download_image(self)
 
 if __name__ == '__main__':
-    test_details_dict = {'Title': 'BLADE RUNNER 2049 (2017)', 'Tomatometer': '88%', 'Audience Score': '81%', 'US Box Office': '$91.5M', 'Release Date (Streaming)': 'Jan 16, 2018', 'Age Rating': 'R', 'Time of Scrape': 'Fri Nov 18 16:47:09 2022', 'Image': 'https://resizing.flixster.com/9jMsWgVxmznwSXln9X7Y4XgYxhw=/206x305/v2/https://resizing.flixster.com/VP4CyK9NQFu-6UWzqpy-qY-5vtY=/ems.cHJkLWVtcy1hc3NldHMvbW92aWVzLzljMzEwZGY4LThjOTEtNGRhZS05MThmLTRkNDhkOWE2Njc0My53ZWJw', 'UUID': 'fcb08b0e-6419-4606-9c26-35ec6d2acac1'}
+    test_details_dict = {'Title': 'What Is a Woman? (2022)', 'Tomatometer': '83%', 'Audience Score': '96%', 'US Box Office': 'Unknown', 'Release Date (Streaming)': 'Jun 1, 2022', 'Age Rating': 'Unknown', 'Time of Scrape': 'Fri Nov 18 18:21:43 2022', 'Image': 'https://resizing.flixster.com/Lc4GOUXt1W-E0RgG6CCvLL-tclk=/206x305/v2/https://resizing.flixster.com/6cMwGg4yBwCUKoDOsoeWay-5nBo=/ems.cHJkLWVtcy1hc3NldHMvbW92aWVzL2E2ZWQyZTllLWVhZmMtNGI2YS1hM2UyLTg1YjI1MTgwY2JiNi5qcGc=', 'UUID': '6f79e62e-0248-40f4-92c3-c5561d01f75f'}
     store = Storage(test_details_dict)
     store.download_all_data()
     print("Done!")
