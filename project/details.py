@@ -22,9 +22,7 @@ class Details:
     Methods:
     -------
     extract_price()
-        Finds the price of the laptop
-    click_specifications()
-        Clicks the specifications tab on the laptop's page
+        Finds the Title of the movie
     extract_technical_data()
         Finds the four pieces of technical data in the specifications table
     extract_stock_code()
@@ -38,52 +36,45 @@ class Details:
     '''
     def __init__(self, driver):
         self.driver = driver
-        required_details = ["Price", "Screen Size", "Resolution", "Storage", "RAM", "Stock Code", "Image", "UUID"]
-        initial_values = ["Unknown"] * 8
-        self.details_dict = {required_details[i]: initial_values[i] for i in range(8)}
+        required_details = ["Title", "Tomatometer", "Audience Score", "US Box Office", "Release Date (Streaming)", "Age Rating", "Time of Scrape", "Image", "UUID"]
+        initial_values = ["Unknown"] * 9
+        self.details_dict = {required_details[i]: initial_values[i] for i in range(9)}
 
-    def __extract_price(self):
-        price = self.driver.find_element(By.XPATH, '//span[@class="pq-price"]').text
-        return price
+    def __extract_title(self):
+        title_location = self.driver.execute_script('return document.querySelector("#topSection > div.thumbnail-scoreboard-wrap > score-board > h1")')
+        title = title_location.text
+        original_release_date_location = self.driver.execute_script('return document.querySelector("#topSection > div.thumbnail-scoreboard-wrap > score-board > p")')
+        original_release_date = original_release_date_location.text[0:4]
+        full_title = f"{title} ({original_release_date})"
+        return full_title
 
-    def __click_specifications(self):
-        self.driver.find_element(by=By.TAG_NAME, value="body").send_keys(Keys.PAGE_DOWN)
-        time.sleep(1)
-        spec_button = self.driver.find_element(By.XPATH, '//p[@data-id = "Specifications"]')
-        spec_button.click()
-        time.sleep(1)
+    def __extract_scores(self):
+        tomatometer_location = self.driver.execute_script('return document.querySelector("#topSection > div.thumbnail-scoreboard-wrap > score-board").shadowRoot.querySelector("div > div.scores-container > div.tomatometer-container > div > score-icon-critic").shadowRoot.querySelector("div > span.percentage")')
+        tomatometer = tomatometer_location.text
+        audience_score_location = self.driver.execute_script('return document.querySelector("#topSection > div.thumbnail-scoreboard-wrap > score-board").shadowRoot.querySelector("div > div.scores-container > div.audience-container > div > score-icon-audience").shadowRoot.querySelector("div > span.percentage")')
+        audience_score = audience_score_location.text
+        return tomatometer, audience_score
 
     def __extract_technical_data(self):
-
-        details_table = self.driver.find_element(By.XPATH, '//*[@id="p-specifications"]')
-        specs = details_table.find_elements(By.XPATH, '//td[@class = "speccol"]')
-        names = specs[::2]
-        values = specs[1::2]
-        for index_1 in range(len(names)):
-            if names[index_1].text == "Screen":
-                screen_specs = values[index_1].text
-                screen_size = screen_specs.split('"')[0]
-                self.details_dict["Screen Size"] = screen_size + " Inches"
-            if names[index_1].text == "Screen Resolution":
-                self.details_dict["Resolution"] = values[index_1].text
-            if names[index_1].text == "Total Storage":
-                total_storage = values[index_1].text
-                storage_amount = total_storage[:total_storage.index('B') + 1]
-                self.details_dict["Storage"] = storage_amount
-            if names[index_1].text == "RAM":
-                ram_full = values[index_1].text
-                ram_amount = ram_full[:ram_full.index('B') + 1]
-                self.details_dict["RAM"] = ram_amount
-
+        details_table = self.driver.find_element(By.XPATH, '//ul[@class="content-meta info"]')
+        categories = details_table.find_elements(By.XPATH, '//li[@class="meta-row clearfix"]')
+        for category in categories:
+            name = category.text.split(":")[0]
+            if name == "Rating":
+                age_rating_full = category.text.split(":")[1][1:]
+                self.details_dict["Age Rating"] = age_rating_full.split()[0]
+            if name == "Release Date (Streaming)":
+                self.details_dict["Release Date (Streaming)"] = category.text.split(":")[1][1:]
+            if name == "Box Office (Gross USA)":
+                self.details_dict["US Box Office"] = category.text.split(":")[1][1:]
         return self.details_dict
-    
-    def __extract_stock_code(self):
-        stock_code_string = self.driver.find_element(By.XPATH, '//p[@class="p-reference p-mancode"]').text
-        stock_code = stock_code_string[stock_code_string.index(':') + 2: stock_code_string.index('|') - 1]
-        return stock_code
+
+    def __set_time_of_scrape(self):
+        current_time = time.ctime()
+        return current_time
 
     def __extract_img_data(self):
-        img_location = self.driver.find_element(By.XPATH, '//img[@class="p-image-button pq-images-small pq-images-show"]')
+        img_location = self.driver.find_element(By.XPATH, '//img[@class="posterImage"]')
         img = img_location.get_attribute("src")
         return img
 
@@ -92,20 +83,22 @@ class Details:
         return UUID
 
     def extract_all_data(self):
-        self.details_dict["Price"] = Details.__extract_price(self)
-        Details.__click_specifications(self)
+        self.details_dict["Tomatometer"] = Details.__extract_scores(self)[0]
+        self.details_dict["Audience Score"] = Details.__extract_scores(self)[1]
+        self.details_dict["Title"] = Details.__extract_title(self)
         self.details_dict = Details.__extract_technical_data(self)
-        self.details_dict["Stock Code"] = Details.__extract_stock_code(self)
         self.details_dict["Image"] = Details.__extract_img_data(self)
+        self.details_dict["Time of Scrape"] = Details.__set_time_of_scrape(self)
         self.details_dict["UUID"] = Details.__assign_uuid(self)
         return self.details_dict
 
 if __name__ == '__main__':
     chromeOptions = Options()
-    chromeOptions.headless = True
+    chromeOptions.headless = False
     driver = webdriver.Chrome(options=chromeOptions)
-    test_URL = "https://www.box.co.uk/82JU00PDUK-Lenovo-Legion-5-AMD-Ryzen-5-8GB-RAM-512G_4095715.html"
+    test_URL = "https://www.rottentomatoes.com/m/where_the_crawdads_sing"
     driver.get(test_URL)
+    time.sleep(4)
     extraction = Details(driver)
     details_dict = extraction.extract_all_data()
     driver.quit()
