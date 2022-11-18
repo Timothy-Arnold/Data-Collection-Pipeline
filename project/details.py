@@ -43,10 +43,10 @@ class Details:
 
     def __extract_title(self):
         title_location = self.driver.execute_script('return document.querySelector("#topSection > div.thumbnail-scoreboard-wrap > score-board > h1")')
-        title = title_location.text
+        title = title_location.get_attribute("textContent")
         original_release_date_location = self.driver.execute_script('return document.querySelector("#topSection > div.thumbnail-scoreboard-wrap > score-board > p")')
         original_release_date = original_release_date_location.text[0:4]
-        full_title = f"{title} ({original_release_date})"
+        full_title = f"{title} ({original_release_date})".strip()
         return full_title
 
     def __extract_scores(self):
@@ -84,9 +84,9 @@ class Details:
         return UUID
 
     def extract_all_data(self):
+        self.details_dict["Title"] = Details.__extract_title(self)
         self.details_dict["Tomatometer"] = Details.__extract_scores(self)[0]
         self.details_dict["Audience Score"] = Details.__extract_scores(self)[1]
-        self.details_dict["Title"] = Details.__extract_title(self)
         self.details_dict = Details.__extract_tabular_data(self)
         self.details_dict["Image"] = Details.__extract_img_data(self)
         self.details_dict["Time of Scrape"] = Details.__set_time_of_scrape(self)
@@ -97,9 +97,9 @@ if __name__ == '__main__':
     chromeOptions = Options()
     chromeOptions.headless = True
     driver = webdriver.Chrome(options=chromeOptions)
-    test_URL = "https://www.rottentomatoes.com/m/blade_runner_2049"
+    test_URL = "https://www.rottentomatoes.com/m/what_is_a_woman"
     driver.get(test_URL)
-    time.sleep(4)
+    time.sleep(3)
     extraction = Details(driver)
     details_dict = extraction.extract_all_data()
     driver.quit()
