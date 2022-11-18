@@ -2,35 +2,36 @@ import time
 import uuid
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 
 class Details:
     '''
-    This class is used to find all of the text and image data required from a laptop product page on box.
+    This class is used to find all of the text and image data required from a movie's page on rottentomatoes.
 
     Parameters:
     ----------
     URL: str
-        The URL of the laptop's page on box.
+        The URL of the movie's page on rottentomatoes.
     
     Attributes:
     ----------
     details_dict: dict
-        The dictionary containing all the desired details of the laptop
+        The dictionary containing all the desired information about the movie
 
     Methods:
     -------
-    extract_price()
+    extract_title()
         Finds the Title of the movie
-    extract_technical_data()
-        Finds the four pieces of technical data in the specifications table
-    extract_stock_code()
-        Finds the stock code of the laptop
-    extract_img_data
-        Finds the url of the first image of the laptop
+    extract_scores()
+        Finds the critic scores and audience scores
+    extract_tabular_data()
+        Finds the Age Rating, Streaming Release date and US Box Office of the movie from the table
+    set_time_of_scrape()
+        Finds the time at which the scrape was performed
+    extract_img_data()
+        Finds the url of the poster image of the movie
     assign_uuid()
-        Generates a random uuid for the laptop
+        Generates a random uuid for the movie
     extract_all_data()
         Puts all the above data into the details dictionary
     '''
@@ -55,7 +56,7 @@ class Details:
         audience_score = audience_score_location.text
         return tomatometer, audience_score
 
-    def __extract_technical_data(self):
+    def __extract_tabular_data(self):
         details_table = self.driver.find_element(By.XPATH, '//ul[@class="content-meta info"]')
         categories = details_table.find_elements(By.XPATH, '//li[@class="meta-row clearfix"]')
         for category in categories:
@@ -86,7 +87,7 @@ class Details:
         self.details_dict["Tomatometer"] = Details.__extract_scores(self)[0]
         self.details_dict["Audience Score"] = Details.__extract_scores(self)[1]
         self.details_dict["Title"] = Details.__extract_title(self)
-        self.details_dict = Details.__extract_technical_data(self)
+        self.details_dict = Details.__extract_tabular_data(self)
         self.details_dict["Image"] = Details.__extract_img_data(self)
         self.details_dict["Time of Scrape"] = Details.__set_time_of_scrape(self)
         self.details_dict["UUID"] = Details.__assign_uuid(self)
@@ -94,9 +95,9 @@ class Details:
 
 if __name__ == '__main__':
     chromeOptions = Options()
-    chromeOptions.headless = False
+    chromeOptions.headless = True
     driver = webdriver.Chrome(options=chromeOptions)
-    test_URL = "https://www.rottentomatoes.com/m/where_the_crawdads_sing"
+    test_URL = "https://www.rottentomatoes.com/m/uncharted_2022"
     driver.get(test_URL)
     time.sleep(4)
     extraction = Details(driver)
