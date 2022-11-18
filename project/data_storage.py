@@ -1,52 +1,49 @@
-import boto3
 import json
 import os
 import requests
 
 class Storage:
     '''
-    This class is used to store the laptops' text and image data in my local directory, as well as upload it to my S3 bucket
+    This class is used to store the movies' text and image data in my local directory.
 
     Parameters:
     ----------
     details_dict: dict
-        The dictionary containing all the desired details of the laptop.
+        The dictionary containing all the desired details of the movie.
     
     Attributes:
     ----------
     details_dict: dict
-        The dictionary containing all the desired details of the laptop.
-    product_id: str
-        The ID of the product which was scraped from it's product page.
+        The dictionary containing all the desired details of the movie.
+    movie_title: str
+        The title of the movie which was scraped from its page (with its spaces replaced by underscores).
     image_url: str
-        The URL of the image of the laptop
+        The URL of the image of the movie.
     product_path: str
-        The path on my PC where I want the details of the laptop to go.
+        The path on my PC where I want the details of the movie to go.
 
     Methods:
     -------
     create_raw_data_folder()
         Creates a raw_data folder in the root if it doesn't already exist.
-    create_product_folder()
-        Creates a product folder in the raw_data folder, named by the product's ID.
+    create_movie_folder()
+        Creates a movie folder in the raw_data folder, named by the movie's ID.
     create_image_folder()
-        Creates an image folder in the product folder if it doesn't already exist.
+        Creates an image folder in the movie folder if it doesn't already exist.
     download_image()
         Stores the image as a .jpg file in the image folder.
     download_all_data()
         Executes all of the above methods.
-    upload_all_data()
-        Takes the data (the json and jpeg file) of the product and uploads both files to my own S3 bucket.
     '''
     def __init__(self, details_dict: dict):
         self.details_dict = details_dict
-        self.product_id = self.details_dict["Stock Code"]
+        self.movie_title = self.details_dict["Title"].replace(" ", "_")
         self.image_url = self.details_dict["Image"]
-        self.product_path = f"C:/Users/timcy/Documents/Aicore/Data-Collection-Pipeline/raw_data/{self.product_id}"
+        self.product_path = f"C:/Users/timcy/Documents/Aicore/Data-Collection-Pipeline/raw_data/{self.movie_title}"
 
     def __create_raw_data_folder(self):
         if not os.path.exists(self.product_path):
-            os.mkdir(self.product_path)
+            os.makedirs(self.product_path)
 
     def __create_product_folder(self):
         with open(f"{self.product_path}/data.json", 'w') as fp:
@@ -58,7 +55,7 @@ class Storage:
             os.mkdir(image_folder_path)
 
     def __download_image(self):
-        image_file_path = self.product_path + f"/images/{self.product_id}"
+        image_file_path = self.product_path + f"/images/{self.movie_title}"
         image_data = requests.get(self.image_url).content
         with open(image_file_path + '.jpg', 'wb') as handler:
             handler.write(image_data)
@@ -69,14 +66,8 @@ class Storage:
         Storage.__create_image_folder(self)
         Storage.__download_image(self)
 
-    def upload_all_data(self):
-        s3_client = boto3.client("s3")
-        s3_client.upload_file(f"../raw_data/{self.product_id}/images/{self.product_id}.jpg", "aicore-box-datalake", f"{self.product_id}.jpg")
-        s3_client.upload_file(f"../raw_data/{self.product_id}/data.json", "aicore-box-datalake", f"{self.product_id}.json")
-
 if __name__ == '__main__':
-    test_details_dict = {'Price': '£229.99', 'Screen Size': '14 Inches', 'Resolution': '1366 x 768', 'Storage': '64GB', 'RAM': '4GB', 'Stock Code': '79519411', 'Image': 'https://www.box.co.uk/image?id=4603979&quality=90&maxwidth=760&maxheight=520', 'UUID': '1ff86a83-6316-4cfb-a9ad-47ca1daa6390'}
+    test_details_dict = {'Title': 'BLADE RUNNER 2049 (2017)', 'Tomatometer': '88%', 'Audience Score': '81%', 'US Box Office': '$91.5M', 'Release Date (Streaming)': 'Jan 16, 2018', 'Age Rating': 'R', 'Time of Scrape': 'Fri Nov 18 16:47:09 2022', 'Image': 'https://resizing.flixster.com/9jMsWgVxmznwSXln9X7Y4XgYxhw=/206x305/v2/https://resizing.flixster.com/VP4CyK9NQFu-6UWzqpy-qY-5vtY=/ems.cHJkLWVtcy1hc3NldHMvbW92aWVzLzljMzEwZGY4LThjOTEtNGRhZS05MThmLTRkNDhkOWE2Njc0My53ZWJw', 'UUID': 'fcb08b0e-6419-4606-9c26-35ec6d2acac1'}
     store = Storage(test_details_dict)
     store.download_all_data()
-    store.upload_data()
     print("Done!")
