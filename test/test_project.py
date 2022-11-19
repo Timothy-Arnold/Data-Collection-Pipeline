@@ -1,4 +1,3 @@
-from os import link
 import random
 import re
 import unittest
