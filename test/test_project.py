@@ -1,5 +1,6 @@
 from os import link
 import random
+import re
 import unittest
 import pathlib as pl
 import test.test_scraper
@@ -17,30 +18,21 @@ class ProjectTestCase(unittest.TestCase):
             raise AssertionError(f"File does not exist: {path}")
 
     def test_project(self):
-        number_of_pages = 3
-        scrape = Scraper(number_of_pages)
+        scrape = Scraper()
         link_list = scrape.scrape_all()
-        self.assertEqual(len(link_list), 21 * number_of_pages)
-        random_index = random.randint(0, 21 * number_of_pages - 2)
+        self.assertEqual(len(link_list), 210)
+        random_index = random.randint(0, 209)
         random_link = link_list[random_index]
         driver = webdriver.Chrome()
         driver.get(random_link)
-        try:
-            extraction = Details(driver)
-            details_dict = extraction.extract_all_data()
-        except:
-            random_link = link_list[random_index + 1]
-            driver.get(random_link)
-            try:
-                extraction = Details(driver)
-                details_dict = extraction.extract_all_data()
-            except Exception as e:
-                print("Two consecutive links didn't work: ", e)
+        extraction = Details(driver)
+        details_dict = extraction.extract_all_data()
         driver.quit()
         store = Storage(details_dict)
         store.download_all_data()
-        product_id = details_dict["Stock Code"]
-        image_path = f"C:/Users/timcy/Documents/Aicore/Data-Collection-Pipeline/raw_data/{product_id}/images/{product_id}.jpg"
+        movie_title_underscores = details_dict["Title"].replace(" ", "_").replace("/", "_")
+        movie_title = re.sub('[:;!?]', '', movie_title_underscores)
+        image_path = f"C:/Users/timcy/Documents/Aicore/Data-Collection-Pipeline/raw_data/{movie_title}/images/{movie_title}.jpg"
         self.assertIsFile(pl.Path(image_path))
 
 if __name__ == '__main__':   
