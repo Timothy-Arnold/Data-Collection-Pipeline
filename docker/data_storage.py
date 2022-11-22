@@ -67,7 +67,7 @@ class Storage:
         Storage.__create_product_folder(self)
         Storage.__create_image_folder(self)
         Storage.__download_image(self)
-        print("Download complete!")
+        # print("Download complete!")
 
 if __name__ == '__main__':
     test_details_dict = {'Title': 'Sell/Buy/Date (2022)', 'Tomatometer': '71%', 'Audience Score': '86%', 'US Box Office': 'Unknown', 'Release Date (Streaming)': 'Nov 8, 2022', 'Age Rating': 'Unknown', 'Time of Scrape': 'Fri Nov 18 18:46:01 2022', 'Image': 'https://resizing.flixster.com/TPL6sElwV9yH--7cQGFpNjNkHoM=/206x305/v2/https://resizing.flixster.com/_rcrP2auKC_ifdihU333b8_9_GU=/ems.cHJkLWVtcy1hc3NldHMvbW92aWVzLzZhYmY0M2JjLTI4MzQtNDE4MS1hZDZjLWRjYjMyZTgxNWJmNy5qcGc=', 'UUID': '072c573a-01c7-4e71-ae45-abaa89f4ea10'}
