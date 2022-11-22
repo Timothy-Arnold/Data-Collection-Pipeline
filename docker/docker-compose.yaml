@@ -2,11 +2,10 @@ version: '2.12.0'
 
 services:
   test_container:
-    image: scraper-fresh
+    image: scraper
     ports:
       - "5432:5432"
     volumes:
-      - C:/Users/timcy/Documents/Aicore/Data-Collection-Pipeline/docker:/rawdata
+      - C:/Users/timcy/Documents/Aicore/Data-Collection-Pipeline/docker:/raw_data
     tty: true               # equivalent for -t
     stdin_open: true        # equivalent for -i
-    privileged: true
