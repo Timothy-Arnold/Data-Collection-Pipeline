@@ -1,6 +1,6 @@
 # Data-Collection-Pipeline
 
-This is a project to make a web-scraper for scraping information about movies from rottentomatoes. It finds the details of the 210 most popular movies at home on rottentomatoes and stores the information in my personal directory.
+This is a project to make a web-scraper for scraping information about movies from rottentomatoes. It primarily uses Selenium to find the details of the 210 most popular movies at home on rottentomatoes and stores the information in my personal directory. I also created an image of it in Docker, which automatically pushes to Dockerhub using Github Actions.
 
 ## Milestone 1
 
@@ -370,7 +370,7 @@ if __name__ == '__main__':
 
 I then put everything into a docker container using these Dockerfile and docker-compose files:
 
-```
+```python
 FROM python:bullseye
 
 ENV PYTHONBUFFERED 1
@@ -396,7 +396,7 @@ RUN pip install -r /requirements.txt
 ENTRYPOINT ["python3", "project.py"]
 ```
 
-```
+```python
 version: '2.12.0'
 
 services:
@@ -410,4 +410,40 @@ services:
     stdin_open: true        # equivalent for -i
 ```
 
+## Milestone 4
+
+I then set up a CI/CD pipeline for my Docker image, which uses Github actions to automatically pushes my image to Dockerhub.
+
+```python
+name: CI
+
+on:
+  push:
+    branches:
+      - "main"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      -
+        name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          context: "{{defaultContext}}:docker"
+          push: true
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/scraper-rottentomatoes
+```
+
 ## Conclusions
+
+This project gave me a lot of experience with the html structure of various websites, using Selenium, as well as making containers and the CI/CD process. If I were to take the project further, I would consider having it upload the data directly to S3 on AWS.
