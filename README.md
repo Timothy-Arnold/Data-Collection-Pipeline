@@ -412,7 +412,7 @@ services:
 
 ## Milestone 4
 
-I then set up a CI/CD pipeline for my Docker image, which uses Github actions to automatically pushes my image to Dockerhub.
+I then set up a CI/CD pipeline for my Docker image, which uses Github actions. It automatically builds a Docker image, and pushes it to my Dockerhub every time I make a push onto my main repository.
 
 ```python
 name: CI
